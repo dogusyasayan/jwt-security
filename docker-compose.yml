@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # MySQL Servisi:
+  # - mysql:latest imajını kullanarak MySQL veritabanı servisini başlatır.
+  # - Çevresel değişkenler (environment variables) aracılığıyla MySQL ayarlarını yapılandırır (root şifresi, veritabanı adı, kullanıcı adı ve şifre).
+  # - volumes aracılığıyla MySQL veritabanının verilerini mysql adlı bir volume'a bağlar. Bu, veritabanı verilerinin kalıcı olarak saklanmasını sağlar.
+  # - ports aracılığıyla, localhost:3306 portundan dış dünyaya açar.
+  # - networks altında mysql adlı bir ağa bağlanır.
+  mysql:
+    container_name: mysql-db
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: jwt_security
+      MYSQL_USER: username
+      MYSQL_PASSWORD: password
+    volumes:
+      - mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - mysql
+    restart: unless-stopped
+
+  # MySQLAdmin Servisi:
+  # - phpmyadmin/phpmyadmin imajını kullanarak PHPMyAdmin arayüzünü başlatır.
+  # - MySQL yönetimi için kullanıcı adı ve şifresini tanımlar.
+  # - ports aracılığıyla, localhost:5050 portundan dış dünyaya açar.
+  # - depends_on ile mysql servisinin başlamasını bekler.
+  # - networks altında mysql adlı bir ağa bağlanır.
+  mysqladmin:
+    container_name: mysql-admin
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "5050:80"
+    depends_on:
+      - mysql
+    networks:
+      - mysql
+    restart: unless-stopped
+
+networks:
+  # Ağ Tanımı:
+  # - mysql adlı bir ağ tanımlanmıştır. Bu ağ, mysql ve mysqladmin servislerini aynı ağda iletişim kurabilecekleri şekilde bir araya getirir.
+  mysql:
+    driver: bridge
+
+volumes:
+  # Volume Tanımı:
+  # - mysql adlı bir volume tanımlanmıştır. Bu volume, MySQL servisinin veritabanı verilerini saklamak için kullanılır.
+  mysql:
+
+
+# Neden Docker Kullandık?
+# Docker, uygulamaların taşınabilir, hafif ve konsolide bir şekilde çalışmasını sağlayan konteynerleştirme teknolojisi sunar.
+# Docker Compose ise çoklu container tabanlı uygulamaların hızlı bir şekilde yapılandırılmasını ve başlatılmasını kolaylaştırır.
+# Bu dosya, geliştirme ortamında ihtiyaç duyulan servisleri hızlıca başlatmak ve bu servisler arasında iletişimi sağlamak için kullanılabilir.
+# Ayrıca, bu servislerin konfigürasyonları tek bir dosyada toplandığı için proje ortamında daha kolay taşınabilir ve paylaşılabilir hale gelir.

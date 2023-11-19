@@ -1,0 +1,24 @@
+# Spring Veritabanı Konfigürasyonları
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/jwt_security  # Veritabanı bağlantı URL'si
+    username: username  # Veritabanı kullanıcı adı
+    password: password  # Veritabanı şifresi
+    driver-class-name: com.mysql.cj.jdbc.Driver  # Kullanılan JDBC sürücüsü
+
+  jpa:
+    hibernate:
+      ddl-auto: update  # Hibernate tarafından veritabanı şemasının nasıl oluşturulacağını belirler (örneğin, "update" mevcut tabloları günceller)
+    show-sql: false  # SQL sorgularının konsola yazılmasını kontrol eder
+    properties:
+      hibernate:
+        format_sql: true  # SQL sorgularının düzenli bir şekilde görüntülenmesini sağlar
+    database: mysql  # Kullanılan veritabanı türü
+    database-platform: org.hibernate.dialect.MySQLDialect  # Hibernate tarafından kullanılan veritabanı diyalektiği
+
+# Uygulama Konfigürasyonları
+application:
+  security:
+    jwt:
+      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970  # JWT token'larını oluşturmak ve doğrulamak için kullanılan gizli anahtar
+      expiration: 86400000  # Token'ın geçerlilik süresi (örneğin, 86400000 milisaniye = bir gün)
